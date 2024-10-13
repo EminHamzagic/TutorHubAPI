@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorHubAPI.Data;
 
@@ -11,9 +12,11 @@ using TutorHubAPI.Data;
 namespace TutorHubAPI.Migrations
 {
     [DbContext(typeof(TutorHubAPIDbContext))]
-    partial class TutorHubAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013171043_Added new table")]
+    partial class Addednewtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,29 +50,6 @@ namespace TutorHubAPI.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "630c2425-23cf-4da9-be77-e8dc8d20eb79",
-                            ConcurrencyStamp = "630c2425-23cf-4da9-be77-e8dc8d20eb79",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        },
-                        new
-                        {
-                            Id = "x37s5q0m6r4m-myy5g3bt8lws5rhu1ocym7p",
-                            ConcurrencyStamp = "x37s5q0m6r4m-myy5g3bt8lws5rhu1ocym7p",
-                            Name = "Professor",
-                            NormalizedName = "PROFESSOR"
-                        },
-                        new
-                        {
-                            Id = "fff052ce-b85c-4131-b667-617640718911",
-                            ConcurrencyStamp = "fff052ce-b85c-4131-b667-617640718911",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

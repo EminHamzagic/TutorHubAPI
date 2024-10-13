@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 using TutorHubAPI.CustomActionFilters;
 using TutorHubAPI.Data;
 using TutorHubAPI.Models.Domain;
@@ -51,6 +52,7 @@ namespace TutorHubAPI.Controllers
                         phone = profesor.Korisnik.PhoneNumber,
                         bio = profesor.bio,
                         grad = profesor.Grad,
+                        Ocena = profesor.Ocena,
                         roles = userRoles.ToList()
 
                     };
@@ -110,6 +112,22 @@ namespace TutorHubAPI.Controllers
             }
 
             return BadRequest(result.Errors);
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+        {
+            var user = await userManager.FindByIdAsync(id.ToString());
+            if(user != null)
+            {
+                var res = await userManager.DeleteAsync(user);
+                if (res.Succeeded)
+                    return NoContent();
+                return BadRequest(res.Errors);
+            }
+            return BadRequest();
         }
     }
 }

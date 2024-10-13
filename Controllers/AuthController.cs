@@ -55,7 +55,8 @@ namespace TutorHubAPI.Controllers
                             {
                                 Id_Korisnik = User.Id,
                                 bio = registerRequestDTO.bio,
-                                Grad = registerRequestDTO.grad
+                                Grad = registerRequestDTO.grad,
+                                Ocena = 10
                             };
                             await context.Profesor.AddAsync(professor);
                             await context.SaveChangesAsync();

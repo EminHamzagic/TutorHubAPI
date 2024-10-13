@@ -10,6 +10,7 @@
         public string? phone { get; set; }
         public string bio { get; set; }
         public string grad { get; set; }
+        public double Ocena { get; set; }
         public List<string> roles { get; set; }
     }
 }

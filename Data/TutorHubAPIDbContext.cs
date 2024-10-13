@@ -21,6 +21,9 @@ namespace TutorHubAPI.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Profesor>()
+                .Property(p => p.Ocena)
+                .HasDefaultValue(10);
             var userRole = "630c2425-23cf-4da9-be77-e8dc8d20eb79";
             var professorRole = "x37s5q0m6r4m-myy5g3bt8lws5rhu1ocym7p";
             var adminRole = "fff052ce-b85c-4131-b667-617640718911";
