@@ -14,8 +14,8 @@ namespace TutorHubAPI.Models.Domain
         public string Prezime { get; set; }
 
         //Navigation properties
-        public ICollection<Zakazani> Zakazanis { get; set; }
-        public ICollection<Ocene> Ocenes { get; set; }
+        public ICollection<Zakazani> Zakazanis { get; set; } = new List<Zakazani>();
+        public ICollection<Ocene> Ocenes { get; set; } = new List<Ocene>();
 
     }
 }

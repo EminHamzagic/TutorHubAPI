@@ -27,7 +27,7 @@ namespace TutorHubAPI.Models.Domain
         //Navigation properties
         public Profesor Profesor { get; set; }
         public Predmet Predmet { get; set; }
-        public ICollection<Termini> Terminis { get; set; }
+        public ICollection<Termini> Terminis { get; set; } = new List<Termini>();
         public Zakazani Zakazani { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace TutorHubAPI.Models.Domain
         public string Naziv { get; set; }
 
         //Navigation properties
-        public ICollection<Profesor> Profesors { get; set; }
-        public ICollection<Oglas> Oglas { get; set; }
+        public ICollection<Profesor> Profesors { get; set; } = new List<Profesor>();
+        public ICollection<Oglas> Oglas { get; set; } = new List<Oglas>();
     }
 }

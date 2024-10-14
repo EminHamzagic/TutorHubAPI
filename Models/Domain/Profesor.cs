@@ -22,9 +22,9 @@ namespace TutorHubAPI.Models.Domain
 
         //Navigation properties
         public Korisnik Korisnik { get; set; }
-        public ICollection<Predmet> Predmets { get; set; }
-        public ICollection<Oglas> Oglas { get; set; }
-        public ICollection<Zakazani> Zakazanis { get; set; }
-        public ICollection<Ocene> Ocenes { get; set; }
+        public ICollection<Predmet> Predmets { get; set; } = new List<Predmet>();
+        public ICollection<Oglas> Oglas { get; set; } = new List<Oglas>();
+        public ICollection<Zakazani> Zakazanis { get; set; } = new List<Zakazani>();
+        public ICollection<Ocene> Ocenes { get; set; } = new List<Ocene>();
     }
 }

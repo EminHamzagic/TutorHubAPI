@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using TutorHubAPI.CustomActionFilters;
 using TutorHubAPI.Data;
 using TutorHubAPI.Models.Domain;
@@ -42,6 +43,19 @@ namespace TutorHubAPI.Controllers
             await context.Predmet.AddAsync(subject);
             await context.SaveChangesAsync();
             return Ok(subject);
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        [Route("{id:int}")]
+        public async Task<IActionResult> DeleteSubject([FromRoute] int id)
+        {
+            var predmet = await context.Predmet.Where(p => p.Id == id).FirstOrDefaultAsync();
+            if (predmet == null)
+                return BadRequest();
+            context.Predmet.Remove(predmet);
+            await context.SaveChangesAsync();
+            return Ok(predmet);
         }
     }
 }
