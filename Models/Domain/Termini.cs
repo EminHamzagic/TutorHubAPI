@@ -14,6 +14,7 @@ namespace TutorHubAPI.Models.Domain
         public int Br_ucenika { get; set; }
 
         //Foreign keys
+        [ForeignKey("Oglas")]
         public int Id_Oglasa { get; set; }
 
         //Navigation properties
