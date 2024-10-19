@@ -11,6 +11,8 @@
         public string bio { get; set; }
         public string grad { get; set; }
         public double Ocena { get; set; }
+        public string pfpUrl { get; set; }
         public List<string> roles { get; set; }
+        public List<GetPredmetResDTO> predmeti { get; set; }
     }
 }

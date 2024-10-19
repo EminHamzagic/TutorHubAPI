@@ -21,7 +21,9 @@ namespace TutorHubAPI.Models.Domain
         public string Opis { get; set; }
 
         //Foreign keys
+        [ForeignKey("Profesor")]
         public int Id_Profesora { get; set; }
+        [ForeignKey("Predmet")]
         public int Id_Predmeta { get; set; }
 
         //Navigation properties

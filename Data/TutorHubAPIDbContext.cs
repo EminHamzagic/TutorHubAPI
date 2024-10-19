@@ -16,6 +16,7 @@ namespace TutorHubAPI.Data
         public DbSet<Termini> Termini { get; set; }
         public DbSet<Oglas> Oglas { get; set; }
         public DbSet<Zakazani> Zakazani { get; set; }
+        public DbSet<Ocene> Ocene { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -13,11 +13,15 @@ namespace TutorHubAPI.Models.Domain
         public string Status { get; set; }
         [Required]
         public DateTime vremeDatum { get; set; }
+        [Required]
+        public string vremeOd_Do { get; set; }
 
         //Foreign keys
         [ForeignKey("Oglas")]
         public int Id_Oglasa { get; set; }
-        public int Id_Profesora { get; set; } 
+        [ForeignKey("Profesor")]
+        public int Id_Profesora { get; set; }
+        [ForeignKey("Korisnik")]
         public string Id_Ucenika { get; set; }
 
         //Navigation properties

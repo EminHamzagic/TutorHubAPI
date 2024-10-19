@@ -15,6 +15,7 @@ namespace TutorHubAPI.Models.Domain
         [StringLength(50)]
         public string Grad { get; set; }
         public double Ocena { get; set; }
+        public string pfpUrl { get; set; }
 
         //Foreign keys
         [ForeignKey("Korisnik")]

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorHubAPI.Data;
 
@@ -11,9 +12,11 @@ using TutorHubAPI.Data;
 namespace TutorHubAPI.Migrations
 {
     [DbContext(typeof(TutorHubAPIDbContext))]
-    partial class TutorHubAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241016125318_Modified FKs")]
+    partial class ModifiedFKs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -386,10 +389,6 @@ namespace TutorHubAPI.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("pfpUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Id_Korisnik");
@@ -446,10 +445,6 @@ namespace TutorHubAPI.Migrations
 
                     b.Property<DateTime>("vremeDatum")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("vremeOd_Do")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

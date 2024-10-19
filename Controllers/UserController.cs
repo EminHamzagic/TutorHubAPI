@@ -39,8 +39,19 @@ namespace TutorHubAPI.Controllers
                 {
                     var profesor = await tutorHubAPIDbContext.Profesor
                         .Include(p => p.Korisnik)
+                        .Include(p => p.Predmets)
                         .Where(p => p.Id_Korisnik == id.ToString())
                         .FirstOrDefaultAsync();
+                    var profPredmeti = new List<GetPredmetResDTO>();
+                    foreach(var p in profesor.Predmets)
+                    {
+                        var subj = new GetPredmetResDTO
+                        {
+                            Id = p.Id,
+                            naziv = p.Naziv
+                        };
+                        profPredmeti.Add(subj);
+                    }
 
                     var profRes = new GetProfessorResponseDTO
                     {
@@ -53,7 +64,8 @@ namespace TutorHubAPI.Controllers
                         bio = profesor.bio,
                         grad = profesor.Grad,
                         Ocena = profesor.Ocena,
-                        roles = userRoles.ToList()
+                        roles = userRoles.ToList(),
+                        predmeti = profPredmeti
 
                     };
                     return Ok(profRes);
