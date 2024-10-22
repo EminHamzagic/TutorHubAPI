@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,23 @@ namespace TutorHubAPI.Controllers
             this.context = context;
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("professor/{id:int}")]
+        public async Task<IActionResult> GetReviews([FromRoute] int id)
+        {
+            var komentari = await context.Ocene.Where(o => o.Id_Profesora == id).ToListAsync();
+            return Ok(komentari);
+        }
+
         [HttpPost]
         [ValidateModel]
         [Authorize]
         public async Task<IActionResult> AddReview([FromBody] AddOcenaDTO addOcenaDTO)
         {
+            var odrzani = await context.Zakazani.Where(z => z.Id_Profesora == addOcenaDTO.Id_Profesora && z.Id_Ucenika == addOcenaDTO.Id_Ucenika && z.Status == "Održano").ToListAsync();
+            if (odrzani.Count() == 0)
+                return BadRequest("Moras odrzati cas sa profesorom da bi ga ocenio!");
             var profesor = await context.Profesor.Where(p => p.Id == addOcenaDTO.Id_Profesora).FirstOrDefaultAsync();
             if (profesor == null)
                 return BadRequest();
@@ -55,6 +68,20 @@ namespace TutorHubAPI.Controllers
             komentar.Komentar = editReviewDTO.Komentar;
             komentar.Ocena = editReviewDTO.Ocena;
 
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("{id:int}")]
+        public async Task<IActionResult> DeleteReview([FromRoute] int id)
+        {
+            var komentar = await context.Ocene.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (komentar == null)
+                return BadRequest();
+
+            context.Ocene.Remove(komentar);
             await context.SaveChangesAsync();
             return NoContent();
         }
