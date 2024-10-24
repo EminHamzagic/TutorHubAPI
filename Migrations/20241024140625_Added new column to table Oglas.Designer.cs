@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorHubAPI.Data;
 
@@ -11,9 +12,11 @@ using TutorHubAPI.Data;
 namespace TutorHubAPI.Migrations
 {
     [DbContext(typeof(TutorHubAPIDbContext))]
-    partial class TutorHubAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241024140625_Added new column to table Oglas")]
+    partial class AddednewcolumntotableOglas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,10 +328,6 @@ namespace TutorHubAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Naslov")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Opis")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -395,6 +394,7 @@ namespace TutorHubAPI.Migrations
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("pfpUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

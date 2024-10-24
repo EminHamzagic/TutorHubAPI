@@ -9,6 +9,8 @@ namespace TutorHubAPI.Models.Domain
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
+        public string Naslov { get; set; }
+        [Required]
         [RegularExpression("^(Group|Individual)$", ErrorMessage = "The value must be either Group or Individual.")]
         public string Tip { get; set; }
         [Required]
@@ -19,6 +21,8 @@ namespace TutorHubAPI.Models.Domain
         public string Adresa { get; set; }
         [Required]
         public string Opis { get; set; }
+        [Required]
+        public string Namenjeno_Obrazovanje { get; set; }
 
         //Foreign keys
         [ForeignKey("Profesor")]

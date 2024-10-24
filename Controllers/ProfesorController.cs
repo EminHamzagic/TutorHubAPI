@@ -84,7 +84,6 @@ namespace TutorHubAPI.Controllers
         }
 
         [HttpPost("setPfp")]
-        [Authorize(Roles = "Professor")]
         public async Task<IActionResult> UploadProfilePicture([FromForm] AddPfpDTO addPfpDTO)
         {
             var professor = await context.Profesor.Where(p => p.Id_Korisnik == addPfpDTO.professor_Id).FirstOrDefaultAsync();

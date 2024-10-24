@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using TutorHubAPI.CustomActionFilters;
 using TutorHubAPI.Data;
 using TutorHubAPI.Functions;
+using TutorHubAPI.Helpers;
 using TutorHubAPI.Models.Domain;
 using TutorHubAPI.Models.DTOs;
 
@@ -38,11 +39,13 @@ namespace TutorHubAPI.Controllers
                 {
                     Id_Profesora = profesor.Id,
                     Id_Predmeta = predmet.Id,
+                    Naslov = addOglasDTO.Naslov,
                     Tip = addOglasDTO.Tip,
                     Cena = addOglasDTO.Cena_Casa,
                     datum = addOglasDTO.Datum,
                     Adresa = addOglasDTO.Adresa,
-                    Opis = addOglasDTO.Opis
+                    Opis = addOglasDTO.Opis,
+                    Namenjeno_Obrazovanje = addOglasDTO.Namenjeno_Obrazovanje
                 };
 
                 foreach(var t in addOglasDTO.Termini)
@@ -80,59 +83,77 @@ namespace TutorHubAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GettAllPosts([FromQuery] string? subject, [FromQuery] bool isAscending = true)
+        public async Task<IActionResult> GetAllPosts([FromQuery] OglasQueryParameters? parameters, [FromQuery] bool isAscending = true)
         {
-            var posts = await context.Oglas.Include(o => o.Terminis).ToListAsync();
-            var postRes = new List<GetOglasResponseDTO>();
-            foreach(var post in posts)
+            // Start building the query, applying filters and including necessary relations.
+            var query = context.Oglas
+                .Include(o => o.Terminis)
+                .Include(o => o.Profesor)
+                .Include(o => o.Predmet)
+                .AsQueryable();
+
+            // Apply filters
+            if (parameters != null && !string.IsNullOrEmpty(parameters.FilterType) && !string.IsNullOrEmpty(parameters.FilterProperty))
             {
-                if (post.datum < DateTime.Now)
-                    continue;
-                var terminiRes = new List<GetTerminResDTO>();
-                foreach(var termin in post.Terminis)
+                switch (parameters.FilterType)
                 {
-                    if (termin.Br_ucenika <= 0)
-                        continue;
-                    var t = new GetTerminResDTO
-                    {
-                        Id = termin.Id,
-                        vreme_Od_Do = termin.vreme_Od_Do,
-                        Br_ucenika = termin.Br_ucenika
-                    };
-                    terminiRes.Add(t);
+                    case "Predmet":
+                        query = query.Where(o => o.Predmet.Naziv == parameters.FilterProperty);
+                        break;
                 }
-                if (terminiRes.Count() <= 0)
-                    continue;
-                var res = new GetOglasResponseDTO
+            }
+
+            query = query.Where(o => o.Naslov.Contains(parameters.SearchText) || o.Profesor.Grad.Contains(parameters.SearchGrad));
+
+            // Apply sorting
+            if (!string.IsNullOrEmpty(parameters.SortProperty))
+            {
+                switch (parameters.SortProperty)
+                {
+                    case "Ocena":
+                        query = isAscending ? query.OrderBy(p => p.Profesor.Ocena) : query.OrderByDescending(p => p.Profesor.Ocena);
+                        break;
+                    case "Obrazovanje":
+                        query = isAscending ? query.OrderBy(p => p.Namenjeno_Obrazovanje) : query.OrderByDescending(p => p.Namenjeno_Obrazovanje);
+                        break;
+                    case "Cena":
+                        query = isAscending ? query.OrderBy(p => p.Cena) : query.OrderByDescending(p => p.Cena);
+                        break;
+                }
+            }
+                query = isAscending ? query.OrderBy(p => p.datum) : query.OrderByDescending(p => p.datum);
+
+            // Project to the DTO directly to avoid fetching unnecessary fields.
+            var postRes = await query
+                .Where(o => o.datum >= DateTime.Now)  // Only posts with future dates
+                .Select(post => new GetOglasResponseDTO
                 {
                     Oglas_Id = post.Id,
                     Id_Profesora = post.Id_Profesora,
                     Id_Predmeta = post.Id_Predmeta,
+                    Naslov = post.Naslov,
                     Tip = post.Tip,
                     Cena_Casa = post.Cena,
-                    Datum= post.datum,
+                    Datum = post.datum,
                     Adresa = post.Adresa,
                     Opis = post.Opis,
-                    Termini = terminiRes
-                };
-                postRes.Add(res);
-            }
-            if (posts != null)
-            {
-                var qPostRes = postRes.AsQueryable();
-                if (!string.IsNullOrEmpty(subject))
-                {
-                    var predmet = await context.Predmet.Where(p => p.Naziv == subject).FirstOrDefaultAsync();
-                    if(predmet != null)
-                    {
-                        qPostRes = qPostRes.Where(x => x.Id_Predmeta == predmet.Id);
-                    }
-                }
-                qPostRes = isAscending ? qPostRes.OrderBy(p => p.Datum) : qPostRes.OrderByDescending(p => p.Datum);
-                return Ok(qPostRes.ToList());
-            }
-            return BadRequest();
+                    Namenjeno_Obrazovanje = post.Namenjeno_Obrazovanje,
+                    Grad = post.Profesor.Grad,
+                    Termini = post.Terminis
+                        .Where(t => t.Br_ucenika > 0)  // Only include termini with available spots
+                        .Select(termin => new GetTerminResDTO
+                        {
+                            Id = termin.Id,
+                            vreme_Od_Do = termin.vreme_Od_Do,
+                            Br_ucenika = termin.Br_ucenika
+                        }).ToList()  // Fetch termini with positive 'Br_ucenika'
+                })
+                .Where(post => post.Termini.Count > 0)  // Ensure posts have valid termini
+                .ToListAsync();
+
+            return Ok(postRes);
         }
+
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]

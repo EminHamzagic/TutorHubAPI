@@ -61,7 +61,7 @@ namespace TutorHubAPI.Controllers
                             await context.Profesor.AddAsync(professor);
                             await context.SaveChangesAsync();
                         }
-                        return Ok("User was successfully created");
+                        return Ok(User.Id.ToString());
                 }
             }
             return BadRequest("Something went wrong");

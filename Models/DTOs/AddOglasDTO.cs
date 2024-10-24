@@ -9,7 +9,10 @@ namespace TutorHubAPI.Models.DTOs
         [Required]
         public int Id_Predmeta { get; set; }
         [Required]
+        public string Naslov { get; set; }
+        [Required]
         public string Tip { get; set; }
+        public string Namenjeno_Obrazovanje { get; set; }
         [Required]
         public int Cena_Casa { get; set; }
         [Required]
